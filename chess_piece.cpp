@@ -222,7 +222,6 @@ Rook::Rook(PieceColor team):ChessPiece(team)
 }
 bool Rook::isValidMove(int r1,int c1,int r2,int c2)
 {
-	// return r1==r2||c1==c2;
 	if(r1==r2)
 	{
 		int i;
