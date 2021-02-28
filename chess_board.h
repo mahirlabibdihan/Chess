@@ -7,6 +7,7 @@
 class ChessBoard:public Grid,public Box{
 private:
 	ChessCell cell[8][8];
+	PieceColor turn;
 	int selectedCellR,selectedCellC;
 	int selectedPieceR,selectedPieceC;
 public:

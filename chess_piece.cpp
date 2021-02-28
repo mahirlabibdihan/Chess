@@ -3,16 +3,20 @@
 extern ChessBoard board;
 ChessPiece::ChessPiece(PieceColor team)
 {
-	show=false;
 	this->team=team;
 }
 PieceColor ChessPiece::getTeam()
 {
 	return team;
 }
+PieceName ChessPiece::getType()
+{
+	return type;
+}
 King::King(PieceColor team):ChessPiece(team)
 {
 	this->team=team; 
+	type=KING;
 }
 void King::draw(int x,int y)
 {
@@ -37,6 +41,7 @@ bool King::isValidMove(int r1,int c1,int r2,int c2)
 Queen::Queen(PieceColor team):ChessPiece(team)
 {
 	this->team=team;
+	type=QUEEN;
 }
 
 bool Queen::isValidMove(int r1,int c1,int r2,int c2)
@@ -110,6 +115,7 @@ void Queen::draw(int x,int y)
 Bishop::Bishop(PieceColor team):ChessPiece(team)
 {
 	this->team=team;
+	type=BISHOP;
 }
 bool Bishop::isValidMove(int r1,int c1,int r2,int c2)
 {
@@ -155,6 +161,7 @@ void Bishop::draw(int x,int y)
 Knight::Knight(PieceColor team):ChessPiece(team)
 {
 	this->team=team;
+	type=KNIGHT;
 }
 bool Knight::isValidMove(int r1,int c1,int r2,int c2)
 {
@@ -219,6 +226,7 @@ void Knight::draw(int x,int y)
 Rook::Rook(PieceColor team):ChessPiece(team)
 {
 	this->team=team;
+	type=ROOK;
 }
 bool Rook::isValidMove(int r1,int c1,int r2,int c2)
 {
@@ -266,10 +274,19 @@ void Rook::draw(int x,int y)
 Pawn::Pawn(PieceColor team):ChessPiece(team)
 {
 	this->team=team;
+	type=PAWN;
 }
 bool Pawn::isValidMove(int r1,int c1,int r2,int c2)
 {
-	return c1==c2&&r2-r1==team*1;
+	if(board.at(r2,c2).isEmpty())
+	{
+		return c1==c2&&r2-r1==team*1;
+	}
+	else
+	{
+		return abs(c1-c2)==1&&r2-r1==team*1;
+	}
+	
 }
 void Pawn::draw(int x,int y)
 {

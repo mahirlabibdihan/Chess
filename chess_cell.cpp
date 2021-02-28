@@ -9,7 +9,7 @@ void ChessCell::draw()
 {
 	iG::ISetColor::iSolid(getColor());
 	iG::IDraw::IFilled::iRectangle(x,y,width,height);
-	if(piece!=NULL) piece->draw(x+width/6,y);
+	if(piece!=NULL) piece->draw(x+width/4,y);
 }
 void ChessCell::setPiece(ChessPiece* piece)
 {

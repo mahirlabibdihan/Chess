@@ -1,14 +1,15 @@
 #ifndef __CHESS_PIECE__ 
 #define __CHESS_PIECE__
 #include "main.h"
-// enum PieceName{KING,QUEEN,BISHOP,KNIGHT,ROOK,PAWN};
+// 
 #include "Point.h"
 #include "Color.h"
 // #include "chess_board.h"
 class ChessPiece:public Point{
 protected:
-	int cellR,cellC,show;
+	int cellR,cellC;
 	PieceColor team;
+	PieceName type;
 public:
 	ChessPiece(PieceColor);
 	virtual bool isValidMove(int,int,int,int)=0;
@@ -18,6 +19,7 @@ public:
 	PieceColor getTeam();
 	void setR(int);
 	void setC(int);
+	PieceName getType();
 };
 
 class King:public ChessPiece{
