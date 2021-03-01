@@ -1,1 +1,1 @@
-<img src="Chess.png" width="900">
+<img src="Chess.PNG" width="900">
