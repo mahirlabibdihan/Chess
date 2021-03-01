@@ -81,6 +81,25 @@ void ChessBoard::draw()
 				iG::ISetColor::iTrans(BLACK,.5);
 				iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
 			}
+			if (selectedPieceR != -1)
+			{
+				if (cell[i][j].empty())
+				{
+					if (cell[i][j].isMovable(selectedPieceR, selectedPieceC, cell[selectedPieceR][selectedPieceC].getPiece()))
+					{
+						iG::ISetColor::iTrans(BLUE, .4);
+						iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
+					}
+				}
+				else if (cell[i][j].getPiece()->getTeam() != cell[selectedPieceR][selectedPieceC].getPiece()->getTeam())
+				{
+					if (cell[i][j].isMovable(selectedPieceR, selectedPieceC, cell[selectedPieceR][selectedPieceC].getPiece()))
+					{
+						iG::ISetColor::iTrans(RED, .4);
+						iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
+					}
+				}
+			}
 		}
 	}
 

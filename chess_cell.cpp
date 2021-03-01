@@ -35,12 +35,15 @@ void ChessCell::setCol(int col)
 }
 
 bool ChessCell::isMovable(int row,int col,ChessPiece* piece)
-{
+{	
 	if(piece->isValidMove(row,col,this->row,this->col))
 	{
 		return true;
 	}
-	return false;
+	else
+	{
+		return false;
+	}
 }
 
 ChessPiece* ChessCell::getPiece()
