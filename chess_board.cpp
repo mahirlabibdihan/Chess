@@ -71,17 +71,13 @@ void ChessBoard::draw()
 	{
 		for (int j = 0; j < col; j++)
 		{
-			if (selectedCellR == i && selectedCellC == j)
-			{
-				iG::ISetColor::iSolid(BLACK);
-				iG::IDraw::IDashed::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight(), 12, 30);
-			}
+
 			if (selectedPieceR == i && selectedPieceC == j)
 			{
 				iG::ISetColor::iTrans(BLACK, .5);
 				iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
 			}
-			if (selectedPieceR != -1)
+			else if (selectedPieceR != -1)
 			{
 				if (cell[i][j].empty())
 				{
@@ -100,16 +96,27 @@ void ChessBoard::draw()
 					}
 				}
 				// Castling
-			else if (cell[i][j].getPiece()->getType() == ROOK && cell[selectedPieceR][selectedPieceC].getPiece()->getType() == KING && i == 0 && (j == 0 || j == col - 1) && selectedPieceR == 0 && selectedPieceC == (col - 1) / 2)
-			{
-
-				if (cell[selectedPieceR][selectedPieceC].isMovable(i,j, cell[i][j].getPiece()))
+				else if (cell[i][j].getPiece()->getType() == ROOK && cell[selectedPieceR][selectedPieceC].getPiece()->getType() == KING && i == 0 && (j == 0 || j == col - 1) && selectedPieceR == 0 && selectedPieceC == (col - 1) / 2)
 				{
-					iG::ISetColor::iTrans(GREEN, .4);
+
+					if (cell[selectedPieceR][selectedPieceC].isMovable(i, j, cell[i][j].getPiece()))
+					{
+						iG::ISetColor::iTrans(GREEN, .4);
 						iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
-					
+
+					}
 				}
 			}
+		}
+	}
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < col; j++)
+		{
+			if (selectedCellR == i && selectedCellC == j)
+			{
+				iG::ISetColor::iSolid(BLACK);
+				iG::IDraw::IDashed::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight(), 12, 30);
 			}
 		}
 	}
@@ -153,6 +160,8 @@ void ChessBoard::draw()
 			}
 		}
 	}
+
+
 }
 
 void ChessBoard::setBoard()
