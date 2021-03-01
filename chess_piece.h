@@ -10,11 +10,13 @@ protected:
 	int cellR,cellC;
 	PieceColor team;
 	PieceName type;
+	bool dead;
 public:
 	ChessPiece(PieceColor);
 	virtual bool isValidMove(int,int,int,int)=0;
 	virtual void draw(int,int)=0;
 	bool isDead();
+	void die();
 	void selectTeam(PieceColor);
 	PieceColor getTeam();
 	void setR(int);

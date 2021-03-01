@@ -5,12 +5,13 @@ ChessCell::ChessCell()
 {
 	piece=NULL;
 }
+
 void ChessCell::draw()
 {
 	iG::ISetColor::iSolid(getColor());
 	iG::IDraw::IFilled::iRectangle(x,y,width,height);
-	if(piece!=NULL) piece->draw(x+width/4,y);
 }
+
 void ChessCell::setPiece(ChessPiece* piece)
 {
 	this->piece=piece;
@@ -19,31 +20,30 @@ void ChessCell::clear()
 {
 	piece=NULL;
 }
-bool ChessCell::isEmpty()
+bool ChessCell::empty()
 {
 	return piece==NULL;
 }
-void ChessCell::setR(int r)
+void ChessCell::setRow(int row)
 {
-	this->r=r;
+	this->row=row;
 }
 
-void ChessCell::setC(int c)
+void ChessCell::setCol(int col)
 {
-	this->c=c;
+	this->col=col;
 }
 
-bool ChessCell::move(int r,int c,ChessPiece* piece)
+bool ChessCell::isMovable(int row,int col,ChessPiece* piece)
 {
-	if(piece->isValidMove(r,c,this->r,this->c))
+	if(piece->isValidMove(row,col,this->row,this->col))
 	{
-		this->piece=piece;
 		return true;
 	}
 	return false;
 }
 
-PieceColor ChessCell::getTeam()
+ChessPiece* ChessCell::getPiece()
 {
-	return piece->getTeam();
+	return piece;
 }

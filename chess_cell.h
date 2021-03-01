@@ -7,17 +7,17 @@
 
 class ChessCell:public Box{
 private:
-	int r,c;
-public:
+	int row,col;
 	ChessPiece* piece;
+public:
 	ChessCell();
 	void draw();
-	bool isEmpty();
+	bool empty();
 	void clear();
 	void setPiece(ChessPiece* piece);
-	void setR(int);
-	void setC(int);
-	bool move(int,int,ChessPiece*);
-	PieceColor getTeam();
+	void setRow(int);
+	void setCol(int);
+	bool isMovable(int,int,ChessPiece*);
+	ChessPiece* getPiece();
 };
 #endif

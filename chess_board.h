@@ -17,11 +17,15 @@ public:
 	void select(int,int);
 	int getSelectedCellR();
 	int getSelectedCellC();
+	int getSelectedPieceR();
+	int getSelectedPieceC();
 	void selectCell(int,int);
 	void selectPiece(int,int);
 	void deSelectPiece();
 	void keyControl(unsigned char);
 	void specialKeyControl(unsigned char);
+	void rotate();
+	PieceColor getTurn();
 	ChessCell at(int,int);
 };
 #endif

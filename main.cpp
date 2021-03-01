@@ -1,7 +1,7 @@
 #include "main.h"
 #include "color.h"
 #include "chess_board.h"
-
+#include "chess_team.h"
 ChessTeam teamWhite(__WHITE__),teamBlack(__BLACK__);
 ChessBoard board;
 
@@ -28,7 +28,7 @@ void setup()
 	board.setHeight(8*board.getUnit());
 	board.setPoint(iG::iGetWindowWidth()/2-board.getWidth()/2,iG::iGetWindowHeight()/2-board.getHeight()/2);
 	board.setBoard();
-	cout<<board.at(0,0).isEmpty()<<endl;
+	cout<<board.at(0,0).empty()<<endl;
 }
 
 int main(int argc, char *argv[])
@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
 	setup();
 	glutInit(&argc, argv);
 	iG::iInitialize("snake");
-	// glutFullScreen();
-	// glutSetCursor(GLUT_CURSOR_NONE);
+	glutFullScreen();
+	glutSetCursor(GLUT_CURSOR_NONE);
 	glutMainLoop();
 }
 
