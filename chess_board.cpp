@@ -3,14 +3,14 @@
 extern ChessTeam teamWhite, teamBlack;
 void ChessBoard::rotate()
 {
-	for(int i=0;i<row/2;i++)
+	for (int i = 0; i < row / 2; i++)
 	{
-		for(int j=0;j<col;j++)
+		for (int j = 0; j < col; j++)
 		{
 			ChessCell temp;
 			temp.setPiece(cell[i][j].getPiece());
-			cell[i][j].setPiece(cell[row-i-1][col-j-1].getPiece());
-			cell[row-i-1][col-j-1].setPiece(temp.getPiece());
+			cell[i][j].setPiece(cell[row - i - 1][col - j - 1].getPiece());
+			cell[row - i - 1][col - j - 1].setPiece(temp.getPiece());
 		}
 	}
 }
@@ -47,7 +47,7 @@ PieceColor ChessBoard::getTurn()
 void ChessBoard::draw()
 {
 	iG::ISetColor::iSolid(98, 52, 18);
-	iG::IDraw::iRectangle(x, y, width, height,60);
+	iG::IDraw::iRectangle(x, y, width, height, 60);
 
 	for (int i = 0; i < row; i++)
 	{
@@ -57,14 +57,14 @@ void ChessBoard::draw()
 		}
 	}
 	iG::ISetColor::iSolid(BLACK);
-	iG::IDraw::iRectangle(x, y, width, height,5);
-	for (int i = 0; i <=row; i++)
+	iG::IDraw::iRectangle(x, y, width, height, 5);
+	for (int i = 0; i <= row; i++)
 	{
-		iG::IDraw::iLine(x, y + i * unit, x + width, y + i * unit,3);
+		iG::IDraw::iLine(x, y + i * unit, x + width, y + i * unit, 3);
 	}
-	for (int i = 0;  i<=col; i++)
+	for (int i = 0;  i <= col; i++)
 	{
-		iG::IDraw::iLine(x + i * unit,y, x + i * unit,y+height,3);
+		iG::IDraw::iLine(x + i * unit, y, x + i * unit, y + height, 3);
 	}
 
 	for (int i = 0; i < row; i++)
@@ -78,7 +78,7 @@ void ChessBoard::draw()
 			}
 			if (selectedPieceR == i && selectedPieceC == j)
 			{
-				iG::ISetColor::iTrans(BLACK,.5);
+				iG::ISetColor::iTrans(BLACK, .5);
 				iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
 			}
 			if (selectedPieceR != -1)
@@ -99,6 +99,17 @@ void ChessBoard::draw()
 						iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
 					}
 				}
+				// Castling
+			else if (cell[i][j].getPiece()->getType() == ROOK && cell[selectedPieceR][selectedPieceC].getPiece()->getType() == KING && i == 0 && (j == 0 || j == col - 1) && selectedPieceR == 0 && selectedPieceC == (col - 1) / 2)
+			{
+
+				if (cell[selectedPieceR][selectedPieceC].isMovable(i,j, cell[i][j].getPiece()))
+				{
+					iG::ISetColor::iTrans(GREEN, .4);
+						iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
+					
+				}
+			}
 			}
 		}
 	}
@@ -111,7 +122,7 @@ void ChessBoard::draw()
 			{
 				if ((cell[i][j].getPiece()->getTeam() == turn && selectedPieceR == -1 && selectedCellR == i && selectedCellC == j) || (selectedPieceR == i && selectedPieceC == j))
 				{
-					cell[i][j].getPiece()->draw(cell[i][j].getX() + cell[i][j].getWidth() / 4, cell[i][j].getY()  + cell[i][j].getHeight()/6);
+					cell[i][j].getPiece()->draw(cell[i][j].getX() + cell[i][j].getWidth() / 4, cell[i][j].getY()  + cell[i][j].getHeight() / 6);
 				}
 				else
 				{
@@ -125,9 +136,9 @@ void ChessBoard::draw()
 	{
 		for (int j = 0; j < col; j++)
 		{
-			if(teamWhite.at(i, j)->isDead())
+			if (teamWhite.at(i, j)->isDead())
 			{
-				teamWhite.at(i, j)->draw(iG::iGetWindowWidth()-150-unit-unit*i,50+unit*j);
+				teamWhite.at(i, j)->draw(iG::iGetWindowWidth() - 150 - unit - unit * i, 50 + unit * j);
 			}
 		}
 	}
@@ -136,9 +147,9 @@ void ChessBoard::draw()
 	{
 		for (int j = 0; j < col; j++)
 		{
-			if(teamBlack.at(i, j)->isDead())
+			if (teamBlack.at(i, j)->isDead())
 			{
-				teamBlack.at(i, j)->draw(200+unit*i,50+unit*j);
+				teamBlack.at(i, j)->draw(200 + unit * i, 50 + unit * j);
 			}
 		}
 	}
@@ -159,7 +170,7 @@ void ChessBoard::setBoard()
 			}
 			else
 			{
-				cell[i][j].setColor(180,134,72);
+				cell[i][j].setColor(180, 134, 72);
 			}
 
 			cell[i][j].setX(x + j * unit);
@@ -187,20 +198,20 @@ void ChessBoard::setBoard()
 		}
 	}
 
-	
+
 }
 void ChessBoard::specialKeyControl(unsigned char key)
 {
 	switch (key)
 	{
-		case GLUT_KEY_END:
-			exit(0); 
-			break;
+	case GLUT_KEY_END:
+		exit(0);
+		break;
 	case GLUT_KEY_UP:
 		if (selectedCellR < row - 1)
 		{
 			selectedCellR++;
-			if (!cell[selectedCellR][selectedCellC].empty() && cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn&& selectedPieceR==-1)
+			if (!cell[selectedCellR][selectedCellC].empty() && cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn && selectedPieceR == -1)
 				PlaySound("Data\\Music\\PickUp.wav", NULL, SND_ASYNC);
 		}
 
@@ -210,7 +221,7 @@ void ChessBoard::specialKeyControl(unsigned char key)
 		{
 
 			selectedCellR--;
-			if (!cell[selectedCellR][selectedCellC].empty() && cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn && selectedPieceR==-1)
+			if (!cell[selectedCellR][selectedCellC].empty() && cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn && selectedPieceR == -1)
 				PlaySound("Data\\Music\\PickUp.wav", NULL, SND_ASYNC);
 		}
 
@@ -219,7 +230,7 @@ void ChessBoard::specialKeyControl(unsigned char key)
 		if (selectedCellC > 0)
 		{
 			selectedCellC--;
-			if (!cell[selectedCellR][selectedCellC].empty() && cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn&& selectedPieceR==-1)
+			if (!cell[selectedCellR][selectedCellC].empty() && cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn && selectedPieceR == -1)
 				PlaySound("Data\\Music\\PickUp.wav", NULL, SND_ASYNC);
 		}
 
@@ -228,7 +239,7 @@ void ChessBoard::specialKeyControl(unsigned char key)
 		if (selectedCellC < col - 1)
 		{
 			selectedCellC++;
-			if (!cell[selectedCellR][selectedCellC].empty() && cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn&& selectedPieceR==-1)
+			if (!cell[selectedCellR][selectedCellC].empty() && cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn && selectedPieceR == -1)
 				PlaySound("Data\\Music\\PickUp.wav", NULL, SND_ASYNC);
 		}
 
@@ -283,13 +294,44 @@ void ChessBoard::keyControl(unsigned char key)
 					deSelectPiece();
 					rotate();
 					if (turn == __BLACK__)
-				{
-					turn = __WHITE__;
+					{
+						turn = __WHITE__;
+					}
+					else
+					{
+						turn = __BLACK__;
+					}
 				}
-				else
+			}
+			// Castling
+			else if (cell[selectedCellR][selectedCellC].getPiece()->getType() == ROOK && cell[selectedPieceR][selectedPieceC].getPiece()->getType() == KING && selectedCellR == 0 && (selectedCellC == 0 || selectedCellC == col - 1) && selectedPieceR == 0 && selectedPieceC == (col - 1) / 2)
+			{
+
+				if (cell[selectedPieceR][selectedPieceC].isMovable(selectedCellR, selectedCellC, cell[selectedCellR][selectedCellC].getPiece()))
 				{
-					turn = __BLACK__;
-				}
+					PlaySound("Data\\Music\\PutDown.wav", NULL, SND_ASYNC);
+					if (selectedPieceC > selectedCellC)
+					{
+						cell[selectedPieceR][selectedPieceC - 2].setPiece(cell[selectedPieceR][selectedPieceC].getPiece());
+						cell[selectedPieceR][selectedPieceC - 1].setPiece(cell[selectedCellR][selectedCellC].getPiece());
+					}
+					else
+					{
+						cell[selectedPieceR][selectedPieceC + 2].setPiece(cell[selectedPieceR][selectedPieceC].getPiece());
+						cell[selectedPieceR][selectedPieceC + 1].setPiece(cell[selectedCellR][selectedCellC].getPiece());
+					}
+					cell[selectedPieceR][selectedPieceC].clear();
+					cell[selectedCellR][selectedCellC].clear();
+					deSelectPiece();
+					rotate();
+					if (turn == __BLACK__)
+					{
+						turn = __WHITE__;
+					}
+					else
+					{
+						turn = __BLACK__;
+					}
 				}
 			}
 		}
