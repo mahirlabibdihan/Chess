@@ -4,7 +4,7 @@ extern ChessBoard board;
 ChessPiece::ChessPiece(PieceColor team)
 {
 	this->team = team;
-	dead=false;
+	dead = false;
 }
 bool ChessPiece::isDead()
 {
@@ -12,7 +12,11 @@ bool ChessPiece::isDead()
 }
 void ChessPiece::die()
 {
-	dead=true;
+	dead = true;
+}
+void ChessPiece::revive()
+{
+	dead = false;
 }
 PieceColor ChessPiece::getTeam()
 {
@@ -42,7 +46,28 @@ void King::draw(int x, int y)
 
 bool King::isValidMove(int r1, int c1, int r2, int c2)
 {
-	return abs(r1 - r2) < 2 && abs(c1 - c2) < 2;
+	/****** NEEDS DEBUUGGING ******/
+	if (abs(r1 - r2) < 2 && abs(c1 - c2) < 2)
+	{
+		for (int i = 0; i < board.getRow(); i++)
+		{
+			for (int j = 0; j < board.getCol(); j++)
+			{
+				if (!board.at(i, j).empty())
+				{
+					if (board.at(i, j).getPiece()->getTeam() != board.getTurn() && board.at(r2, c2).isMovable(i, j, board.at(i, j).getPiece()))
+					{
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 Queen::Queen(PieceColor team): ChessPiece(team)
@@ -243,13 +268,13 @@ bool Pawn::isValidMove(int r1, int c1, int r2, int c2)
 {
 	if (board.at(r2, c2).empty() && c1 == c2)
 	{
-		if ( r2 - r1 == 1)
+		if ( r2 - r1 == (board.isRotated() ? 1 : team) * 1)
 		{
 			return true;
 		}
-		else if (r2 - r1 == 2)
+		else if (r2 - r1 == (board.isRotated() ? 1 : team) * 2)
 		{
-			if (r1 == 1&&board.at((r2+r1)/2, c1).empty())
+			if (r1 == 1 && board.at((r2 + r1) / 2, c1).empty())
 			{
 				return true;
 			}
@@ -265,7 +290,7 @@ bool Pawn::isValidMove(int r1, int c1, int r2, int c2)
 	}
 	else if (!board.at(r2, c2).empty() && abs(c1 - c2) == 1)
 	{
-		return r2 - r1 == 1;
+		return r2 - r1 == (board.isRotated() ? 1 : team) * 1;
 	}
 	else
 	{

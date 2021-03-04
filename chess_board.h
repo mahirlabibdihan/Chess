@@ -10,6 +10,7 @@ private:
 	PieceColor turn;
 	int selectedCellR,selectedCellC;
 	int selectedPieceR,selectedPieceC;
+	bool checkMate,upDown;
 public:
 	ChessBoard();
 	void draw();
@@ -25,6 +26,8 @@ public:
 	void keyControl(unsigned char);
 	void specialKeyControl(unsigned char);
 	void rotate();
+	bool isRotated();
+	bool isCheckMate();
 	PieceColor getTurn();
 	ChessCell at(int,int);
 };

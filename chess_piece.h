@@ -17,6 +17,7 @@ public:
 	virtual void draw(int,int)=0;
 	bool isDead();
 	void die();
+	void revive();
 	void selectTeam(PieceColor);
 	PieceColor getTeam();
 	void setR(int);

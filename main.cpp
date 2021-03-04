@@ -18,7 +18,6 @@ void iG::windowSetup()
 	iG::iSetWindowHeight(iScreenHeight);
 	iG::iSetWindowWidth(iScreenWidth);
 	iG::iSetClearColor(BLACK);
-	// 
 }
 
 void setup()

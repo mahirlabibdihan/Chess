@@ -13,14 +13,48 @@ void ChessBoard::rotate()
 			cell[row - i - 1][col - j - 1].setPiece(temp.getPiece());
 		}
 	}
+	upDown = !upDown;
 }
 
+bool ChessBoard::isCheckMate()
+{
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < col; j++)
+		{
+			if (cell[i][j].empty()) continue;
+			if (cell[i][j].getPiece()->getTeam() == turn && cell[i][j].getPiece()->getType() == KING)
+			{
+				for (int p = 0; p < row; p++)
+				{
+					for (int q = 0; q < col; q++)
+					{
+						if (!cell[p][q].empty())
+						{
+							if (cell[p][q].getPiece()->getTeam() != turn && cell[i][j].isMovable(p, q, cell[p][q].getPiece()))
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
 ChessBoard::ChessBoard()
 {
 	this->row = this->col = 8;
 	selectedCellR = selectedCellC = 0;
 	selectedPieceR = selectedPieceC = -1;
 	turn = __WHITE__;
+	checkMate = false;
+	upDown = false;
+}
+bool ChessBoard::isRotated()
+{
+	return upDown;
 }
 int ChessBoard::getSelectedCellR()
 {
@@ -79,23 +113,27 @@ void ChessBoard::draw()
 			}
 			else if (selectedPieceR != -1)
 			{
+				/* Guideline for moving */
 				if (cell[i][j].empty())
 				{
-					if (cell[i][j].isMovable(selectedPieceR, selectedPieceC, cell[selectedPieceR][selectedPieceC].getPiece()))
-					{
-						iG::ISetColor::iTrans(BLUE, .4);
-						iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
-					}
+					// if (cell[i][j].isMovable(selectedPieceR, selectedPieceC, cell[selectedPieceR][selectedPieceC].getPiece()))
+					// {
+					// 	iG::ISetColor::iTrans(BLUE, .4);
+					// 	iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
+					// }
 				}
+
+				/* Guideline for capturing */
 				else if (cell[i][j].getPiece()->getTeam() != cell[selectedPieceR][selectedPieceC].getPiece()->getTeam())
 				{
-					if (cell[i][j].isMovable(selectedPieceR, selectedPieceC, cell[selectedPieceR][selectedPieceC].getPiece()))
-					{
-						iG::ISetColor::iTrans(RED, .4);
-						iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
-					}
+					// if (cell[i][j].isMovable(selectedPieceR, selectedPieceC, cell[selectedPieceR][selectedPieceC].getPiece()))
+					// {
+					// 	iG::ISetColor::iTrans(RED, .4);
+					// 	iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
+					// }
 				}
-				// Castling
+
+				/* Castling */
 				else if (cell[i][j].getPiece()->getType() == ROOK && cell[selectedPieceR][selectedPieceC].getPiece()->getType() == KING && i == 0 && (j == 0 || j == col - 1) && selectedPieceR == 0 && selectedPieceC == (col - 1) / 2)
 				{
 
@@ -109,6 +147,29 @@ void ChessBoard::draw()
 			}
 		}
 	}
+
+
+	/* Check */
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < col; j++)
+		{
+			if (!cell[i][j].empty())
+			{
+				if (cell[i][j].getPiece()->getTeam() == turn && cell[i][j].getPiece()->getType() == KING)
+				{
+					if (isCheckMate())
+					{
+						iG::ISetColor::iTrans(RED, .4);
+						iG::IDraw::IFilled::iRectangle(cell[i][j].getX(), cell[i][j].getY(), cell[i][j].getWidth(), cell[i][j].getHeight());
+					}
+				}
+			}
+		}
+	}
+
+
+
 	for (int i = 0; i < row; i++)
 	{
 		for (int j = 0; j < col; j++)
@@ -139,6 +200,7 @@ void ChessBoard::draw()
 		}
 	}
 
+	/* Draw dead white pieces outside the board */
 	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < col; j++)
@@ -150,6 +212,7 @@ void ChessBoard::draw()
 		}
 	}
 
+	/* Draw dead black pieces outside the board */
 	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < col; j++)
@@ -160,8 +223,6 @@ void ChessBoard::draw()
 			}
 		}
 	}
-
-
 }
 
 void ChessBoard::setBoard()
@@ -206,8 +267,6 @@ void ChessBoard::setBoard()
 			cell[row - i - 1][col - j - 1].setPiece(teamBlack.at(i, j));
 		}
 	}
-
-
 }
 void ChessBoard::specialKeyControl(unsigned char key)
 {
@@ -282,9 +341,20 @@ void ChessBoard::keyControl(unsigned char key)
 		{
 			if (selectedPieceR == -1)
 			{
+
 				if (cell[selectedCellR][selectedCellC].getPiece()->getTeam() == turn)
 				{
-					selectPiece(selectedCellR, selectedCellC);
+					if (checkMate)
+					{
+						if (cell[selectedCellR][selectedCellC].getPiece()->getType() == KING)
+						{
+							selectPiece(selectedCellR, selectedCellC);
+						}
+					}
+					else
+					{
+						selectPiece(selectedCellR, selectedCellC);
+					}
 				}
 			}
 			else if (selectedCellR == selectedPieceR && selectedCellC == selectedPieceC)
@@ -292,24 +362,38 @@ void ChessBoard::keyControl(unsigned char key)
 				// PlaySound("Data\\Music\\PutDown.wav", NULL, SND_ASYNC);
 				deSelectPiece();
 			}
+
+
+			/* Capturing */
 			else if (cell[selectedCellR][selectedCellC].getPiece()->getTeam() != cell[selectedPieceR][selectedPieceC].getPiece()->getTeam())
 			{
 				if (cell[selectedCellR][selectedCellC].isMovable(selectedPieceR, selectedPieceC, cell[selectedPieceR][selectedPieceC].getPiece()))
 				{
-					PlaySound("Data\\Music\\PutDown.wav", NULL, SND_ASYNC);
-					cell[selectedCellR][selectedCellC].getPiece()->die();
+					ChessPiece *temp1 = cell[selectedCellR][selectedCellC].getPiece(), *temp2 = cell[selectedPieceR][selectedPieceC].getPiece();
 					cell[selectedCellR][selectedCellC].setPiece(cell[selectedPieceR][selectedPieceC].getPiece());
 					cell[selectedPieceR][selectedPieceC].clear();
-					deSelectPiece();
-					rotate();
-					if (turn == __BLACK__)
+
+					if (isCheckMate())
 					{
-						turn = __WHITE__;
+						cell[selectedCellR][selectedCellC].setPiece(temp1);
+						cell[selectedPieceR][selectedPieceC].setPiece(temp2);
 					}
 					else
 					{
-						turn = __BLACK__;
+						PlaySound("Data\\Music\\PutDown.wav", NULL, SND_ASYNC);
+						cell[selectedCellR][selectedCellC].getPiece()->die();
+						if (turn == __BLACK__)
+						{
+							turn = __WHITE__;
+						}
+						else
+						{
+							turn = __BLACK__;
+						}
+						deSelectPiece();
+						rotate();
 					}
+
 				}
 			}
 			// Castling
@@ -331,8 +415,7 @@ void ChessBoard::keyControl(unsigned char key)
 					}
 					cell[selectedPieceR][selectedPieceC].clear();
 					cell[selectedCellR][selectedCellC].clear();
-					deSelectPiece();
-					rotate();
+
 					if (turn == __BLACK__)
 					{
 						turn = __WHITE__;
@@ -341,6 +424,8 @@ void ChessBoard::keyControl(unsigned char key)
 					{
 						turn = __BLACK__;
 					}
+					deSelectPiece();
+					rotate();
 				}
 			}
 		}
@@ -348,23 +433,34 @@ void ChessBoard::keyControl(unsigned char key)
 		{
 			if (cell[selectedCellR][selectedCellC].isMovable(selectedPieceR, selectedPieceC, cell[selectedPieceR][selectedPieceC].getPiece()))
 			{
-				PlaySound("Data\\Music\\PutDown.wav", NULL, SND_ASYNC);
+				
+				ChessPiece* temp1 = cell[selectedCellR][selectedCellC].getPiece(), *temp2 = cell[selectedPieceR][selectedPieceC].getPiece();
 				cell[selectedCellR][selectedCellC].setPiece(cell[selectedPieceR][selectedPieceC].getPiece());
 				cell[selectedPieceR][selectedPieceC].clear();
-				deSelectPiece();
-				rotate();
-				if (turn == __BLACK__)
+
+				if (isCheckMate())
 				{
-					turn = __WHITE__;
+					cell[selectedCellR][selectedCellC].setPiece(temp1);
+					cell[selectedPieceR][selectedPieceC].setPiece(temp2);
 				}
 				else
 				{
-					turn = __BLACK__;
+					PlaySound("Data\\Music\\PutDown.wav", NULL, SND_ASYNC);
+					if (turn == __BLACK__)
+					{
+						turn = __WHITE__;
+					}
+					else
+					{
+						turn = __BLACK__;
+					}
+					deSelectPiece();
+					rotate();
 				}
+
 			}
 		}
 		break;
-
 	case 'c':
 		deSelectPiece();
 		break;
