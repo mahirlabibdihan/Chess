@@ -27,7 +27,6 @@ void setup()
 	board.setHeight(8*board.getUnit());
 	board.setPoint(iG::iGetWindowWidth()/2-board.getWidth()/2,iG::iGetWindowHeight()/2-board.getHeight()/2);
 	board.setBoard();
-	cout<<board.at(0,0).empty()<<endl;
 }
 
 int main(int argc, char *argv[])
